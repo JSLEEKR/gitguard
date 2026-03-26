@@ -1,6 +1,31 @@
-# gitguard
+<div align="center">
 
-Git pre-commit security scanner that detects secrets, credentials, API keys, and sensitive patterns before they reach your repository.
+# 🛡️ gitguard
+
+### Pre-commit security scanner for secrets
+
+[![GitHub Stars](https://img.shields.io/github/stars/JSLEEKR/gitguard?style=for-the-badge&logo=github&color=yellow)](https://github.com/JSLEEKR/gitguard/stargazers)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Tests](https://img.shields.io/badge/tests-520%20passing-brightgreen?style=for-the-badge)](#)
+
+<br/>
+
+**Block secrets, credentials, and API keys from reaching your repository**
+
+</div>
+
+---
+
+## Why This Exists
+
+Secrets get committed. It happens to every team -- an API key hardcoded during local testing, an AWS credential that slipped into a config file, a JWT secret copy-pasted into a fixture. Once it is in git history, it is exposed. Rotating it is expensive. The damage is already done.
+
+`gitguard` installs as a pre-commit hook and scans every diff before it reaches your repository. Twenty-five built-in rules cover the credentials that actually get leaked -- AWS, GCP, GitHub, Stripe, Slack, SSH keys, JWT tokens, and database URLs. Shannon entropy detection catches random-looking secrets that pattern matching misses.
+
+- **Pre-commit by default** -- blocks the commit at the source before any push, branch, or CI run sees the secret
+- **Diff-aware scanning** -- only scans added lines in the staged diff, so it stays fast even on large repositories
+- **SARIF output** -- integrates with GitHub Code Scanning and any CI/CD pipeline that accepts the standard security format
 
 ## Features
 
