@@ -50,22 +50,40 @@ def escalate_findings(
     findings: list[Finding],
     rules: list[EscalationRule] | None = None,
 ) -> list[Finding]:
-    """Apply escalation rules to findings."""
+    """Apply escalation rules to findings.
+
+    Returns a new list with escalated copies; original findings are not mutated.
+    """
     if rules is None:
         rules = DEFAULT_ESCALATION_RULES
 
+    result: list[Finding] = []
     for finding in findings:
+        escalated = False
         for rule in rules:
             if _matches_condition(finding, rule):
                 if rule.target_severity > finding.severity:
-                    finding.severity = rule.target_severity
-                    finding.description = (
+                    # Create a new Finding with escalated severity to avoid mutating the original
+                    new_desc = (
                         f"{finding.description} [escalated by {rule.name}]"
                         if finding.description
                         else f"[escalated by {rule.name}]"
                     )
+                    finding = Finding(
+                        rule_id=finding.rule_id,
+                        rule_name=finding.rule_name,
+                        severity=rule.target_severity,
+                        file_path=finding.file_path,
+                        line_number=finding.line_number,
+                        line_content=finding.line_content,
+                        match_text=finding.match_text,
+                        description=new_desc,
+                        masked_match=finding.masked_match,
+                    )
+                    escalated = True
+        result.append(finding)
 
-    return findings
+    return result
 
 
 def _matches_condition(finding: Finding, rule: EscalationRule) -> bool:
